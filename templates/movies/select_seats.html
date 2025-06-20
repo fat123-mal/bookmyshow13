@@ -1,0 +1,155 @@
+{% extends "users/basic.html" %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+
+      <!-- Movie and Showtime Info -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between flex-wrap">
+            <div>
+              <h4>{{ showtime.movie.name }}</h4>
+              <p class="text-muted">
+                {{ showtime.theater.name }} | {{ showtime.show_date|date:"d M Y" }} | {{ showtime.show_time|time:"h:i A" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seat Selection Card -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-center mb-4">Select Your Seats</h5>
+          <div class="screen">All eyes this way please!</div>
+
+          <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center flex-wrap mb-4">
+              {% for seat in seats %}
+                {% if seat.is_booked %}
+                  <div class="seat booked">{{ seat.seat_number }}</div>
+                {% elif seat.reserved_by == request.user and seat.reserved_until > now %}
+                  <div class="seat yours">{{ seat.seat_number }}</div>
+                {% elif seat.reserved_until > now %}
+                  <div class="seat reserved">{{ seat.seat_number }}</div>
+                {% else %}
+                  <label class="seat available">
+                    {{ seat.seat_number }}
+                    <input type="checkbox" name="seats" value="{{ seat.id }}">
+                  </label>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <!-- Seat Legend -->
+            <div class="d-flex justify-content-center mb-4 flex-wrap">
+              <div class="d-flex align-items-center me-3 mb-2">
+                <div class="legend-box available"></div><span class="ms-2">Available</span>
+              </div>
+              <div class="d-flex align-items-center me-3 mb-2">
+                <div class="legend-box yours"></div><span class="ms-2">Your Reserved</span>
+              </div>
+              <div class="d-flex align-items-center me-3 mb-2">
+                <div class="legend-box reserved"></div><span class="ms-2">Reserved by Others</span>
+              </div>
+              <div class="d-flex align-items-center mb-2">
+                <div class="legend-box booked"></div><span class="ms-2">Booked</span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+              <button type="submit" class="btn btn-success btn-lg">Book Selected Seats</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Seat Styling -->
+<style>
+  .seat {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+  .seat input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .seat.available {
+    border: 2px solid green;
+    color: green;
+    cursor: pointer;
+  }
+
+  .seat.available:hover {
+    background-color: green;
+    color: white;
+  }
+
+  .seat.yours {
+    background-color: royalblue;
+    color: white;
+  }
+
+  .seat.booked {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+
+  .seat.reserved {
+    background-color: orange;
+    color: white;
+    cursor: not-allowed;
+  }
+
+  .legend-box {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+
+  .legend-box.available {
+    background-color: white;
+    border: 2px solid green;
+  }
+
+  .legend-box.yours {
+    background-color: royalblue;
+  }
+
+  .legend-box.reserved {
+    background-color: orange;
+  }
+
+  .legend-box.booked {
+    background-color: red;
+  }
+
+  .screen {
+    background-color: #eee;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %}

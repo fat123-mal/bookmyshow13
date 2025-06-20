@@ -1,0 +1,26 @@
+{% extends "users/basic.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card p-4 shadow rounded bg-light">
+    <h2 class="text-success mb-3">✅ Booking Confirmed!</h2>
+
+    <h4>{{ booking.showtime.movie.title }}</h4>
+    <p><strong>Theater:</strong> {{ booking.showtime.theater.name }}</p>
+    <p><strong>Date:</strong> {{ booking.showtime.date }}</p>
+    <p><strong>Time:</strong> {{ booking.showtime.time }}</p>
+    <p><strong>Price per Seat:</strong> ₹{{ booking.showtime.price }}</p>
+
+    <p><strong>Booked Seats:</strong>
+      {% for seat in booking.seats.all %}
+        <span class="badge bg-primary">{{ seat.seat_number }}</span>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+
+    <p class="mt-3">📩 A confirmation email has been sent to your registered email address.</p>
+    
+    <a href="{% url 'home' %}" class="btn btn-outline-success mt-3">Go to Home</a>
+  </div>
+</div>
+{% endblock %}

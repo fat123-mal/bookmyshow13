@@ -1,0 +1,77 @@
+{% extends "users/basic.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Select Your Seats</h2>
+
+  {% if error %}
+    <div class="alert alert-danger text-center">{{ error }}</div>
+  {% endif %}
+
+  <!-- Seat Legend -->
+  <div class="text-center mb-4">
+    <span class="badge bg-success me-2">Available</span>
+    <!--<span class="badge bg-primary me-2">Selected</span>-->
+    <span class="badge bg-danger me-2">Sold</span>
+    <span class="badge bg-warning text-dark">Your Booking</span>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+      {% for seat in seats %}
+        {% with user_booking=seat.booking_set.first %}
+          <div class="col-auto mb-2">
+            {% if not seat.is_booked %}
+              <!-- Available Seat -->
+              <label class="btn btn-outline-success seat-label">
+                <input type="checkbox" name="seats" value="{{ seat.id }}" autocomplete="off" class="d-none">
+                {{ seat.seat_number }}
+              </label>
+            {% elif user_booking.user == request.user %}
+              <!-- Your Booking -->
+              <label class="btn btn-warning seat-label disabled">
+                <input type="checkbox" disabled class="d-none">
+                {{ seat.seat_number }}
+              </label>
+            {% else %}
+              <!-- Sold Seat -->
+              <label class="btn btn-danger seat-label disabled">
+                <input type="checkbox" disabled class="d-none">
+                {{ seat.seat_number }}
+              </label>
+            {% endif %}
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+      <button type="submit" class="btn btn-primary px-4">Book Selected Seats</button>
+    </div>
+  </form>
+</div>
+
+<style>
+  .seat-label {
+    padding: 12px 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    min-width: 50px;
+  }
+
+  .seat-label.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  .seat-label input:checked + span {
+    background-color: #0d6efd;
+    color: white;
+  }
+</style>
+{% endblock %}
