@@ -6,9 +6,9 @@ services:
     buildCommand: |
       pip install -r requirements.txt
     startCommand: |
-      python manage.py migrate && python manage.py collectstatic --noinput && gunicorn bookmyshow13.wsgi:application
+      python manage.py migrate && python manage.py collectstatic --noinput && gunicorn bookmyshow13copy2.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: bookmyshow13.settings
+        value: bookmyshow13 - copy (2).settings
       - key: PYTHON_VERSION
         value: 3.12.3
