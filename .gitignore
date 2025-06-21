@@ -1,0 +1,18 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+
+# Ignore SQLite database
+db.sqlite3
+
+# Ignore staticfiles collected by collectstatic
+staticfiles/
+
+# Ignore environment files
+.env
+
+# Ignore virtual environment folders
+venv/
+
+# Ignore VSCode settings (optional)
+.vscode/
