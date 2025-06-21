@@ -136,23 +136,25 @@
   <body>
     <!-- Your movie cards section -->
     <div class="section-title">Recommended Movies</div>
-  <div class="row">
-    {% if movies %}
-    {% for movie in movies|slice:":4" %}
-    <div class="col-md-3 col-sm-6">
-      <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
-        <div class="card h-100">
-          <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg" class="card-img-top" alt="{{ movie.name }}" />
-          <div class="card-body d-flex flex-column justify-content-between">
-            <h5 class="card-title text-center">{{ movie.name }}</h5>
-            <p class="card-text text-center">{{ movie.description }}</p>
-          </div>
+<div class="row">
+  {% if movies %}
+  {% for movie in movies|slice:":4" %}
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+      <div class="card h-100">
+        {% with img_path='images/new_banner'|add:forloop.counter|stringformat:'d'|add:'.jpg' %}
+          <img src="{% static img_path %}" class="card-img-top" alt="{{ movie.name }}" />
+        {% endwith %}
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h5 class="card-title text-center">{{ movie.name }}</h5>
+          <p class="card-text text-center">{{ movie.description }}</p>
         </div>
-      </a>
-    </div>
-    {% endfor %}
-    {% endif %}
+      </div>
+    </a>
   </div>
+  {% endfor %}
+  {% endif %}
+</div>
 
   </body>
 </html>
