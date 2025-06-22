@@ -5,23 +5,22 @@
 <div class="container py-5">
   <h1 class="text-center mb-5" style="color: #0d6efd;">Movies</h1>
 
-  <!-- 🎯 Redesigned Filter Section -->
+  <!-- 🎯 Filter Section -->
   <form method="get" class="mb-5">
     <div class="row g-4 justify-content-center">
-      
       <!-- Genre Filter -->
       <div class="col-md-5">
         <div class="card shadow-sm border-0">
           <div class="card-body">
             <h5 class="card-title mb-3" style="color: #0d6efd;">
-              <i class="fas fa-tags me-2" style="color: #0d6efd;"></i>Filter by Genre
+              <i class="fas fa-tags me-2"></i>Filter by Genre
             </h5>
             <div class="row">
               {% for g in genre_options %}
                 <div class="col-6">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="genre" value="{{ g }}" {% if g in selected_genres %}checked{% endif %}>
-                    <label class="form-check-label" style="color: #343a40;">{{ g }}</label>
+                    <label class="form-check-label">{{ g }}</label>
                   </div>
                 </div>
               {% endfor %}
@@ -35,14 +34,14 @@
         <div class="card shadow-sm border-0">
           <div class="card-body">
             <h5 class="card-title mb-3" style="color: #198754;">
-              <i class="fas fa-language me-2" style="color: #198754;"></i>Filter by Language
+              <i class="fas fa-language me-2"></i>Filter by Language
             </h5>
             <div class="row">
               {% for lang in language_options %}
                 <div class="col-6">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="language" value="{{ lang }}" {% if lang in selected_languages %}checked{% endif %}>
-                    <label class="form-check-label" style="color: #343a40;">{{ lang }}</label>
+                    <label class="form-check-label">{{ lang }}</label>
                   </div>
                 </div>
               {% endfor %}
@@ -50,7 +49,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Filter Buttons -->
@@ -69,20 +67,22 @@
     {% for movie in movies %}
       <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
-         <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg" class="card-img-top" alt="{{ movie.name }}">
 
+          <!-- ✅ Dynamic banner based on position -->
+          <img src="{% static 'images/banner' %}{{ forloop.counter }}{% if forloop.counter <= 4 %}_home{% else %}_movies{% endif %}.jpg" 
+               class="card-img-top" alt="{{ movie.name }}">
 
           <div class="card-body">
             <h5 class="card-title" style="color: #212529;">{{ movie.name }}</h5>
             <p class="card-text">
               {% if movie.rating %}
                 <i class="fas fa-star text-warning"></i>
-                <span class="fw-bold" style="color: #212529;">{{ movie.rating }}</span>
+                <span class="fw-bold">{{ movie.rating }}</span>
               {% else %}
                 <span class="text-muted">⭐ Not Rated</span>
               {% endif %}
             </p>
-            <p class="card-text small" style="color: #6c757d;">
+            <p class="card-text small text-muted">
               <i class="fas fa-users me-1"></i> Cast: {{ movie.cast }}<br>
               <i class="fas fa-tags me-1"></i> Genre: {{ movie.genre }}<br>
               <i class="fas fa-language me-1"></i> Language: {{ movie.language }}
@@ -94,6 +94,7 @@
               View Theaters <i class="fas fa-chevron-right ms-2"></i>
             </a>
           </div>
+
         </div>
       </div>
     {% empty %}
@@ -107,10 +108,10 @@
 <!-- 🔤 Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-<!-- ✅ Bootstrap 5 CSS (make sure it's linked) -->
+<!-- ✅ Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- ⚙ Bootstrap JS and dependencies -->
+<!-- ⚙ Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- ✨ Card Hover Styling -->
