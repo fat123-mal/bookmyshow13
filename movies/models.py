@@ -28,7 +28,8 @@ class Movie(models.Model):
     genre = models.CharField(max_length=50, choices=GENRE_CHOICES, default='Action')
     language = models.CharField(max_length=50, choices=LANGUAGE_CHOICES, default='English')
     description = models.TextField(blank=True, null=True)          # Description
-    image = models.CharField(max_length=100)  # Path to image filename
+    image = models.CharField(max_length=100)  
+
 
     def __str__(self):
         return self.name

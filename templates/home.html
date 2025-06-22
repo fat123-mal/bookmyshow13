@@ -31,7 +31,7 @@
   }
 
   .card-img-top {
-    height: 400px !important;
+    height: 500px !important;
     object-fit: cover;
   }
 
@@ -80,13 +80,13 @@
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" alt="First slide" height="300" />
+      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" alt="First slide" height="500" />
     </div>
     <div class="carousel-item">
-      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg" alt="Second slide" height="300" />
+      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg" alt="Second slide" height="500" />
     </div>
     <div class="carousel-item">
-      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1729172081740_sorcar1240x300.jpg" alt="Third slide" height="300" />
+      <img class="d-block w-100" src="https://assets-in.bmscdn.com/promotions/cms/creatives/1729172081740_sorcar1240x300.jpg" alt="Third slide" height="500" />
     </div>
   </div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -107,28 +107,54 @@
   </div>
   {% endif %}
 
+  <!-- Movie Filters -->
+ <!--- <form method="get" class="form-inline mb-4">
+    <div class="form-group mr-3">
+      <label for="genre" class="mr-2">Genre:</label>
+      <select name="genre" id="genre" class="form-control">
+        <option value="">All</option>
+        {% for g in genres %}
+        <option value="{{ g }}" {% if request.GET.genre == g %}selected{% endif %}>{{ g }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mr-3">
+      <label for="language" class="mr-2">Language:</label>
+      <select name="language" id="language" class="form-control">
+        <option value="">All</option>
+        {% for l in languages %}
+        <option value="{{ l }}" {% if request.GET.language == l %}selected{% endif %}>{{ l }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>-->
+
   <!-- Recommended Movies -->
   <div class="section-title">Recommended Movies</div>
   <div class="row">
     {% if movies %}
       {% for movie in movies|slice:":4" %}
-        <div class="col-md-3 col-sm-6">
-          <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
-            <div class="card h-100">
-              <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg" class="card-img-top" alt="{{ movie.name }}">
-              <div class="card-body d-flex flex-column justify-content-between">
-                <h5 class="card-title text-center">{{ movie.name }}</h5>
-                <p class="card-text text-center">{{ movie.description }}</p>
-              </div>
-            </div>
-          </a>
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+      <div class="card h-100">
+        <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg"
+     class="card-img-top" alt="{{ movie.name }}">
+
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h5 class="card-title text-center">{{ movie.name }}</h5>
+          <p class="card-text text-center">{{ movie.description }}</p>
         </div>
-      {% endfor %}
+      </div>
+    </a>
+  </div>
+{% endfor %}
+
     {% endif %}
   </div>
 
   <!-- Live Events Section -->
- <!--- <div class="section-title">The Best of Live Events</div>
+  <!--<div class="section-title">The Best of Live Events</div>
   <div class="row">
     {% for i in "123456" %}
     <div class="col-md-2 col-sm-4">
@@ -143,7 +169,7 @@
   </div>-->
 
   <!-- Premieres Section -->
-  <!--<div class="section-title">Premiere</div>
+ <!--- <div class="section-title">Premiere</div>
   <div class="row">
     {% for i in "1234" %}
     <div class="col-md-3 col-sm-6">
@@ -158,7 +184,7 @@
   </div>-->
 
   <!-- Music Section -->
- <!--- <div class="section-title">Your Music Studio</div>
+ <!---<div class="section-title">Your Music Studio</div>
   <div class="row">
     {% for i in "123456" %}
     <div class="col-md-2 col-sm-4">
@@ -170,7 +196,7 @@
       </div>
     </div>
     {% endfor %}
-  </div>-
+  </div>
 </div>-->
 
 <!-- Scripts -->

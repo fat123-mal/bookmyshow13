@@ -6,12 +6,31 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import HttpResponse  # ✅ Needed for test_email view
+from django.http import HttpResponse
+from django.contrib import messages
 
 
 def home(request):
-    movies = Movie.objects.all()
-    return render(request, "home.html", {"movies": movies})
+    genre_filter = request.GET.get('genre')
+    language_filter = request.GET.get('language')
+
+    # Force consistent order
+    movies = Movie.objects.all().order_by('id')
+
+    if genre_filter:
+        movies = movies.filter(genre=genre_filter)
+    if language_filter:
+        movies = movies.filter(language=language_filter)
+
+    genres = Movie.objects.values_list('genre', flat=True).distinct()
+    languages = Movie.objects.values_list('language', flat=True).distinct()
+
+    return render(request, "home.html", {
+        "movies": movies,
+        "genres": genres,
+        "languages": languages,
+    })
+
 
 
 def movie_list(request):
@@ -52,7 +71,6 @@ def showtimes(request, movie_id):
     showtimes = Showtime.objects.filter(movie=movie).order_by('show_time')
     return render(request, 'movies/showtimes.html', {'movie': movie, 'showtimes': showtimes})
 
-
 @login_required
 def select_seats(request, showtime_id):
     showtime = get_object_or_404(Showtime, id=showtime_id)
@@ -61,17 +79,25 @@ def select_seats(request, showtime_id):
 
     if request.method == 'POST':
         selected_seat_ids = request.POST.getlist('seats')
-        selected_seats = Seat.objects.filter(id__in=selected_seat_ids, is_booked=False)
+        selected_seats = Seat.objects.filter(id__in=selected_seat_ids)
+
+        already_booked = []
+        booked_now = []
 
         for seat in selected_seats:
-            seat.is_booked = True
-            seat.reserved_by = request.user
-            seat.reserved_until = None
-            seat.save()
+            if seat.is_booked or (seat.reserved_until and seat.reserved_until > now and seat.reserved_by != request.user):
+                already_booked.append(seat.seat_number)
+            else:
+                seat.is_booked = True
+                seat.reserved_by = request.user
+                seat.reserved_until = None
+                seat.save()
+                booked_now.append(seat.seat_number)
 
-        seat_numbers = [seat.seat_number for seat in selected_seats]
-        subject = "Your Movie Ticket Booking Confirmation"
-        message = f"""
+        # ✅ Email only if booking happened
+        if booked_now:
+            subject = "Your Movie Ticket Booking Confirmation"
+            message = f"""
 Dear {request.user.username},
 
 Thank you for booking with BookMySeat!
@@ -80,23 +106,31 @@ Thank you for booking with BookMySeat!
 🏢 Theater: {showtime.theater.name}
 🗓️ Date: {showtime.show_date.strftime('%d %B %Y')}
 🕒 Time: {showtime.show_time.strftime('%I:%M %p')}
-🎺 Seats: {', '.join(seat_numbers)}
+🎺 Seats: {', '.join(booked_now)}
 
 Enjoy your show!
 """
 
-        try:
-            send_mail(
-                subject,
-                message,
-                settings.DEFAULT_FROM_EMAIL,
-                [request.user.email],
-                fail_silently=False
-            )
-        except Exception as e:
-            print("Email send error:", e)
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [request.user.email],
+                    fail_silently=False
+                )
+            except Exception as e:
+                print("Email send error:", e)
 
-        return redirect('home')
+        # ✅ Show message
+        if already_booked:
+            messages.error(request, f"The following seats are already booked or reserved: {', '.join(already_booked)}")
+        elif booked_now:
+            messages.success(request, f"You booked successfully: {', '.join(booked_now)}")
+        else:
+            messages.info(request, "No seats selected.")
+
+        return redirect('select_seats', showtime_id=showtime_id)
 
     context = {
         'showtime': showtime,
@@ -195,16 +229,12 @@ def booking_confirmation(request, booking_id):
 
 # ✅ Test Email Sending (Debug View)
 def test_email(request):
-    from django.core.mail import send_mail
-    from django.conf import settings
-    from django.http import HttpResponse
-
     try:
         send_mail(
             subject='✅ Test Email from Django',
             message='This is a test email to check your SMTP settings.',
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['fathimaabdullatheef278@gmail'],  # use your email
+            recipient_list=['fathimaabdullatheef278@gmail.com'],  # ✅ Replace with your email
             fail_silently=False
         )
         return HttpResponse("✅ Email sent successfully.")

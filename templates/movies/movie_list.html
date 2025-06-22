@@ -69,15 +69,18 @@
     {% for movie in movies %}
       <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
-          <img src="{% static 'images/' %}{{ movie.image }}"
-               class="card-img-top" alt="{{ movie.name }}"
-               style="height: 300px; object-fit: cover;" />
+         <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg" class="card-img-top" alt="{{ movie.name }}">
+
 
           <div class="card-body">
             <h5 class="card-title" style="color: #212529;">{{ movie.name }}</h5>
             <p class="card-text">
-              <i class="fas fa-star text-warning"></i>
-              <span class="fw-bold" style="color: #212529;">{{ movie.rating }}</span>
+              {% if movie.rating %}
+                <i class="fas fa-star text-warning"></i>
+                <span class="fw-bold" style="color: #212529;">{{ movie.rating }}</span>
+              {% else %}
+                <span class="text-muted">⭐ Not Rated</span>
+              {% endif %}
             </p>
             <p class="card-text small" style="color: #6c757d;">
               <i class="fas fa-users me-1"></i> Cast: {{ movie.cast }}<br>
