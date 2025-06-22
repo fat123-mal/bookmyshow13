@@ -138,7 +138,8 @@
   <div class="col-md-3 col-sm-6">
     <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
       <div class="card h-100">
-        <img src="{% static 'images/new_banner' %}{{ forloop.counter }}.jpg"
+        <img src="{% static 'images/banner' %}{{ forloop.counter }}_home.jpg"
+
      class="card-img-top" alt="{{ movie.name }}">
 
         <div class="card-body d-flex flex-column justify-content-between">
